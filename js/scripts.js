@@ -7,6 +7,18 @@ const projection = {
     artist: "http://example.com/artist"
     };
 
+const sq = es.newSolrQuery()
+.context(config.contextId)
+.rdfType("http://example.com/PieceOfArt")
+
+const sl = sq.list()
+sl.getEntries().then((entryArr) =>{
+    for(const entry of entryArr){
+        const proj = entry.projection(projection)
+        buildProjectionCard(proj)
+    }
+})
+
 const buildProjectionCard = function(projectionItem){
     // Create elements needed to build a card  
     const divCol = document.createElement('div')
@@ -42,44 +54,11 @@ const buildProjectionCard = function(projectionItem){
     divCardBody.setAttribute('class', 'card-body')
     h5Title.setAttribute('class', 'card-title')
     h5Artist.setAttribute('class', 'card-title')
-    //h5Artist.setAttribute('id', index)
     pCardText.setAttribute('class', 'card-text')
 
     
 }
 
 
-const sq = es.newSolrQuery()
-.context(config.contextId)
-.rdfType("http://example.com/PieceOfArt")
-
-const sl = sq.list()
-sl.getEntries().then((entryArr) =>{
-    for(const entry of entryArr){
-        const proj = entry.projection(projection)
-        buildProjectionCard(proj)
-    }
-   // console.log(entryArr)
-})
-//.forEach((child, index) => {
- //   const proj = child.projection(projection);
- //   buildProjectionCard(proj,index);
- //   })
-//.then()
-
-const artistHeaders = document.querySelectorAll(".card-title-artist");
-console.log(artistHeaders)
-
-//const demoTag = document.getElementById('1');
-//console.log(demoTag)
-//const first = demoTag[0].innerText
-//console.log(sl) 
 
 
-
-//for(const header of artistHeaders){
-  //  console.log('artistHeader: ', artistHeader);
-    //es.getEntry(artistHeader).then((entry) => {
-      //  h5Artist.innerHTML = EntryStore.html.print(entry);
-    //}
-//};
