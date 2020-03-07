@@ -16,4 +16,7 @@ The code inside js/script.js does the following:
 
 3. Obtains a list of the results.  
 
-4. From the list of results, it gets each entry,passes it through the projection and sends the "clean" data to the buildProjectionCard() function which generates the card layout.
+4. From the list of results, it gets each entry,passes it through the projection and sends the filtered data to the buildProjectionCard() function which generates the card layout.
+
+5. Inside the buildProjectionCard function, another entry point is created to the entrystore which is used to load an Artist entry and get his name as a metadata. This is achieved by using the Data-key:http://example.com/artist as an URI from each entry of type PieceofArt .
+
