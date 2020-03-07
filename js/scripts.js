@@ -1,5 +1,7 @@
+// Create an entry point for the backend entrystore
 const es = new EntryStore.EntryStore(config.repository);
 
+// Create the projection for the entries
 const projection = {
     title: "http://purl.org/dc/terms/title",
     description: "http://purl.org/dc/terms/description",
@@ -7,18 +9,27 @@ const projection = {
     artist: "http://example.com/artist"
     };
 
+// Create a query of type PieceOfArt
 const sq = es.newSolrQuery()
 .context(config.contextId)
 .rdfType("http://example.com/PieceOfArt")
 
+// Load the results in a list
 const sl = sq.list()
+
+// For every entry in the entry array call the function
+// buildProjectionCard to generate DOM elements
 sl.getEntries().then((entryArr) =>{
     for(const entry of entryArr){
         const proj = entry.projection(projection)
         buildProjectionCard(proj)
     }
-})
+}, (err) => {
+      alert(`Failure to load entry: ${err}`);
+});
 
+
+// A function that generates DOM elements for each entry
 const buildProjectionCard = function(projectionItem){
     // Create elements needed to build a card  
     const divCol = document.createElement('div')
@@ -54,9 +65,36 @@ const buildProjectionCard = function(projectionItem){
     divCardBody.setAttribute('class', 'card-body')
     h5Title.setAttribute('class', 'card-title')
     h5Artist.setAttribute('class', 'card-title')
-    pCardText.setAttribute('class', 'card-text')
+    pCardText.setAttribute('class', 'card-text')   
 
-    
+    // Create an entry point for the entrystore
+    const es = new EntryStore.EntryStore(config.repository);
+
+    // Get the URI from the artist and use a 'hack' to get the repository number
+    // since cross-domain restrictions don't allow us to use directly the URI
+    const artistURI = projectionItem.artist
+    const repo = artistURI.split("/").pop();
+
+    // Get the new URI
+    const entryURI = es.getEntryURI("1", repo);
+
+
+    es.getEntry(entryURI).then((entry) => {
+        
+        // Get the name and the lastname of each entry
+        const artistFamName = entry.getMetadata().findFirstValue(entry.getResourceURI(), 'http://xmlns.com/foaf/0.1/familyName')
+        const artistGivenName = entry.getMetadata().findFirstValue(entry.getResourceURI(), 'http://xmlns.com/foaf/0.1/givenName')
+        
+        // If there is no lastname we simply show the name
+        if (typeof artistFamName !== 'undefined'){
+            const artistName = artistGivenName.concat(' ', artistFamName)
+            h5Artist.innerHTML = artistName 
+        } else {
+            h5Artist.innerHTML = artistGivenName
+        }        
+    }, (err) => {
+      alert(`Failure to load entry: ${err}`);
+    });
 }
 
 
