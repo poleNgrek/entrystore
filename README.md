@@ -6,7 +6,7 @@ A project showcasing how to do a Solr query to obtain entries of type “Piece o
 
 The project is done using the [EntryStore](https://entrystore.org/#!JavaScript.md "EntryStore Javascript") client library as a backend, [Bootstrap4](https://getbootstrap.com/ "Bootstrap homepage") for the CSS, HTML and Javascript. 
 
-There is only one script file that handles the both the data fetching and the representation logic.
+There is only one script file that handles both the data fetching and the representation logic.
 
 The code inside js/script.js does the following:
 
